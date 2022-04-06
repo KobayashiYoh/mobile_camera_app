@@ -37,6 +37,12 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  void _switchOpenMenu() {
+    setState(() {
+      _openMenu = _openMenu ? false : true;
+    });
+  }
+
   void _switchShootingMode() {
     setState(() {
       _videoMode = _videoMode ? false : true;
@@ -215,24 +221,14 @@ class _CameraPageState extends State<CameraPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: _openMenu
-                          ? const Color(0x55FFFFFF)
-                          : Colors.transparent,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(24.0)),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _openMenu = _openMenu ? false : true;
-                        });
-                      },
-                      child: const Icon(
-                        Icons.keyboard_control,
-                        color: Colors.white,
-                      ),
+                  GestureDetector(
+                    onTap: _switchOpenMenu,
+                    child: Icon(
+                      _openMenu
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: Colors.white,
+                      size: 40.0,
                     ),
                   ),
                   GestureDetector(
@@ -269,7 +265,7 @@ class _CameraPageState extends State<CameraPage> {
                     child: const Icon(
                       Icons.insert_photo_outlined,
                       color: Colors.white,
-                      size: 32.0,
+                      size: 40.0,
                     ),
                   ),
                 ],
