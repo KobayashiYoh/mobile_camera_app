@@ -21,6 +21,7 @@ class _CameraPageState extends State<CameraPage> {
   String _resolutionText = '480p';
 
   bool _openMenu = false;
+  bool _videoMode = false;
 
   Future<void> _initCameraController() async {
     _resolutionPreset = ResolutionPreset.medium;
@@ -33,6 +34,12 @@ class _CameraPageState extends State<CameraPage> {
         return;
       }
       setState(() {});
+    });
+  }
+
+  void _switchShootingMode() {
+    setState(() {
+      _videoMode = _videoMode ? false : true;
     });
   }
 
@@ -132,24 +139,23 @@ class _CameraPageState extends State<CameraPage> {
         child: Row(
           children: [
             _menuItem(
-              _switchBetweenInnerAndOuterCameras,
-              _menuItemIcon(Icons.sync_outlined),
-              (_cameraIdx == 0) ? '内カメラ' : '外カメラ',
+              _switchShootingMode,
+              _menuItemIcon(
+                _videoMode
+                    ? Icons.camera_enhance_outlined
+                    : Icons.videocam_outlined,
+              ),
+              _videoMode ? 'カメラ' : 'ビデオ',
             ),
             _menuItem(
-              () {},
-              _menuItemIcon(Icons.camera_enhance_outlined),
-              'カメラ',
+              _switchBetweenInnerAndOuterCameras,
+              _menuItemIcon(Icons.sync_outlined),
+              _cameraIdx == 0 ? '内カメラ' : '外カメラ',
             ),
             _menuItem(
               _switchResolution,
               _menuItemIcon(Icons.control_camera_outlined),
               _resolutionText,
-            ),
-            _menuItem(
-              () {},
-              _menuItemIcon(Icons.photo_camera_front),
-              'ビデオ',
             ),
             _menuItem(
               () {},
@@ -229,24 +235,41 @@ class _CameraPageState extends State<CameraPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    child: GestureDetector(
-                      onTap: _takePicture,
-                      child: const Icon(
-                        Icons.camera,
-                        color: Colors.white,
-                        size: 64.0,
-                      ),
-                    ),
+                  GestureDetector(
+                    onTap: _takePicture,
+                    child: _videoMode
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: const [
+                              Icon(
+                                Icons.fiber_manual_record_outlined,
+                                color: Colors.white,
+                                size: 72.0,
+                              ),
+                              Icon(
+                                Icons.fiber_manual_record_outlined,
+                                color: Colors.black,
+                                size: 64.0,
+                              ),
+                              Icon(
+                                Icons.fiber_manual_record,
+                                color: Colors.red,
+                                size: 48.0,
+                              )
+                            ],
+                          )
+                        : const Icon(
+                            Icons.camera,
+                            color: Colors.white,
+                            size: 64.0,
+                          ),
                   ),
-                  Container(
-                    child: GestureDetector(
-                      onTap: _openGallery,
-                      child: const Icon(
-                        Icons.insert_photo_outlined,
-                        color: Colors.white,
-                        size: 32.0,
-                      ),
+                  GestureDetector(
+                    onTap: _openGallery,
+                    child: const Icon(
+                      Icons.insert_photo_outlined,
+                      color: Colors.white,
+                      size: 32.0,
                     ),
                   ),
                 ],
