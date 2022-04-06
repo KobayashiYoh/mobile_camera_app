@@ -19,6 +19,10 @@ class MyApp extends StatelessWidget {
       title: 'Mobile Camera App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        iconTheme: const IconThemeData(
+          color: Color(0xCCFFFFFF),
+          size: 40.0,
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: CameraPage(cameras: _cameras),

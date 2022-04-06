@@ -109,14 +109,6 @@ class _CameraPageState extends State<CameraPage> {
     await picker.pickImage(source: ImageSource.gallery);
   }
 
-  Widget _menuItemIcon(IconData iconData) {
-    return Icon(
-      iconData,
-      color: const Color(0xCCFFFFFF),
-      size: 40.0,
-    );
-  }
-
   Widget _menuItem(Function() onTap, Widget child, String text) {
     return GestureDetector(
       onTap: onTap,
@@ -138,7 +130,7 @@ class _CameraPageState extends State<CameraPage> {
 
   Widget _cameraMenuBar() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       color: const Color(0x77000000),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -146,7 +138,7 @@ class _CameraPageState extends State<CameraPage> {
           children: [
             _menuItem(
               _switchShootingMode,
-              _menuItemIcon(
+              Icon(
                 _videoMode
                     ? Icons.camera_enhance_outlined
                     : Icons.videocam_outlined,
@@ -155,27 +147,27 @@ class _CameraPageState extends State<CameraPage> {
             ),
             _menuItem(
               _switchBetweenInnerAndOuterCameras,
-              _menuItemIcon(Icons.sync_outlined),
+              const Icon(Icons.sync_outlined),
               _cameraIdx == 0 ? '内カメラ' : '外カメラ',
             ),
             _menuItem(
               _switchResolution,
-              _menuItemIcon(Icons.control_camera_outlined),
+              const Icon(Icons.control_camera_outlined),
               _resolutionText,
             ),
             _menuItem(
               () {},
-              _menuItemIcon(Icons.qr_code_2),
+              const Icon(Icons.qr_code_2),
               'QRコード',
             ),
             _menuItem(
               () {},
-              _menuItemIcon(CupertinoIcons.barcode),
+              const Icon(CupertinoIcons.barcode),
               'バーコード',
             ),
             _menuItem(
               () {},
-              _menuItemIcon(Icons.keyboard_control),
+              const Icon(Icons.keyboard_control),
               'その他',
             ),
           ],
@@ -227,8 +219,6 @@ class _CameraPageState extends State<CameraPage> {
                       _openMenu
                           ? Icons.keyboard_arrow_up
                           : Icons.keyboard_arrow_down,
-                      color: Colors.white,
-                      size: 40.0,
                     ),
                   ),
                   GestureDetector(
@@ -239,7 +229,6 @@ class _CameraPageState extends State<CameraPage> {
                             children: const [
                               Icon(
                                 Icons.fiber_manual_record_outlined,
-                                color: Colors.white,
                                 size: 72.0,
                               ),
                               Icon(
@@ -256,7 +245,6 @@ class _CameraPageState extends State<CameraPage> {
                           )
                         : const Icon(
                             Icons.camera,
-                            color: Colors.white,
                             size: 64.0,
                           ),
                   ),
@@ -264,8 +252,6 @@ class _CameraPageState extends State<CameraPage> {
                     onTap: _openGallery,
                     child: const Icon(
                       Icons.insert_photo_outlined,
-                      color: Colors.white,
-                      size: 40.0,
                     ),
                   ),
                 ],
