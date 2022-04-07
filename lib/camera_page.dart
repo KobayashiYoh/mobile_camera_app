@@ -17,8 +17,6 @@ class _CameraPageState extends State<CameraPage> {
   late CameraController _cameraController;
   late ResolutionPreset _resolutionPreset;
   int _cameraIdx = 0;
-  int _resolutionIdx = 1;
-  String _resolutionText = '480p';
 
   bool _openMenu = false;
   bool _videoMode = false;
@@ -83,39 +81,33 @@ class _CameraPageState extends State<CameraPage> {
     setState(() {});
   }
 
-  Future<void> _switchResolution() async {
-    _resolutionIdx++;
-    if (_resolutionIdx > 5) {
-      _resolutionIdx = 0;
-    }
-    switch (_resolutionIdx) {
-      case 0:
-        _resolutionPreset = ResolutionPreset.low;
-        _resolutionText = '240p';
-        break;
-      case 1:
+  String _resolutionText = '480p';
+  // FIXME: 画質の切り替え不可
+  Future<void> _switchResolutionPreset() async {
+    switch (_resolutionPreset) {
+      case ResolutionPreset.low:
         _resolutionPreset = ResolutionPreset.medium;
         _resolutionText = '480p';
         break;
-      case 2:
+      case ResolutionPreset.medium:
         _resolutionPreset = ResolutionPreset.high;
         _resolutionText = '720p';
         break;
-      case 3:
+      case ResolutionPreset.high:
         _resolutionPreset = ResolutionPreset.veryHigh;
         _resolutionText = '1080p';
         break;
-      case 4:
+      case ResolutionPreset.veryHigh:
         _resolutionPreset = ResolutionPreset.ultraHigh;
         _resolutionText = '2160p';
         break;
-      case 5:
+      case ResolutionPreset.ultraHigh:
         _resolutionPreset = ResolutionPreset.max;
         _resolutionText = 'max';
         break;
       default:
-        _resolutionPreset = ResolutionPreset.medium;
-        _resolutionText = '480p';
+        _resolutionPreset = ResolutionPreset.low;
+        _resolutionText = '240p';
         break;
     }
     await _initCameraController();
@@ -196,7 +188,7 @@ class _CameraPageState extends State<CameraPage> {
               'フラッシュ',
             ),
             _menuItem(
-              _switchResolution,
+              _switchResolutionPreset,
               const Icon(Icons.control_camera_outlined),
               _resolutionText,
             ),
