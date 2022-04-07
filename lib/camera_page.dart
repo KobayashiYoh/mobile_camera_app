@@ -56,6 +56,33 @@ class _CameraPageState extends State<CameraPage> {
     _initCameraController();
   }
 
+  // FIXME: フラッシュモードの切り替え不可
+  Future<void> _switchFlashMode() async {
+    FlashMode mode;
+    switch (_cameraController.value.flashMode) {
+      case FlashMode.off:
+        mode = FlashMode.auto;
+        break;
+      case FlashMode.auto:
+        mode = FlashMode.always;
+        break;
+      case FlashMode.always:
+        mode = FlashMode.torch;
+        break;
+      default:
+        mode = FlashMode.off;
+        break;
+    }
+
+    try {
+      await _cameraController.setFlashMode(mode);
+    } catch (e) {
+      rethrow;
+    }
+
+    setState(() {});
+  }
+
   Future<void> _switchResolution() async {
     _resolutionIdx++;
     if (_resolutionIdx > 5) {
@@ -109,6 +136,19 @@ class _CameraPageState extends State<CameraPage> {
     await picker.pickImage(source: ImageSource.gallery);
   }
 
+  Widget _flashModeIcon() {
+    switch (_cameraController.value.flashMode) {
+      case FlashMode.off:
+        return const Icon(Icons.flash_off);
+      case FlashMode.auto:
+        return const Icon(Icons.flash_auto);
+      case FlashMode.always:
+        return const Icon(Icons.flash_on);
+      default:
+        return const Icon(Icons.highlight_outlined);
+    }
+  }
+
   Widget _menuItem(Function() onTap, Widget child, String text) {
     return GestureDetector(
       onTap: onTap,
@@ -137,6 +177,11 @@ class _CameraPageState extends State<CameraPage> {
         child: Row(
           children: [
             _menuItem(
+              _switchBetweenInnerAndOuterCameras,
+              const Icon(Icons.sync_outlined),
+              _cameraIdx == 0 ? '内カメラ' : '外カメラ',
+            ),
+            _menuItem(
               _switchShootingMode,
               Icon(
                 _videoMode
@@ -146,9 +191,9 @@ class _CameraPageState extends State<CameraPage> {
               _videoMode ? 'カメラ' : 'ビデオ',
             ),
             _menuItem(
-              _switchBetweenInnerAndOuterCameras,
-              const Icon(Icons.sync_outlined),
-              _cameraIdx == 0 ? '内カメラ' : '外カメラ',
+              _switchFlashMode,
+              _flashModeIcon(),
+              'フラッシュ',
             ),
             _menuItem(
               _switchResolution,
