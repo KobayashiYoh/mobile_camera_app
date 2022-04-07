@@ -56,7 +56,7 @@ class _CameraPageState extends State<CameraPage> {
     _initCameraController();
   }
 
-  void _switchResolution() {
+  Future<void> _switchResolution() async {
     _resolutionIdx++;
     if (_resolutionIdx > 5) {
       _resolutionIdx = 0;
@@ -91,7 +91,7 @@ class _CameraPageState extends State<CameraPage> {
         _resolutionText = '480p';
         break;
     }
-    _initCameraController();
+    await _initCameraController();
     setState(() {});
   }
 
