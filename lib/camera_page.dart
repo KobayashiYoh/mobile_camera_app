@@ -123,6 +123,37 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
+  Future<void> _startVideoRecording() async {
+    if (_cameraController.value.isRecordingVideo) {
+      return;
+    }
+
+    try {
+      await _cameraController.startVideoRecording();
+      setState(() {});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _stopVideoRecording() async {
+    try {
+      final movieFile = await _cameraController.stopVideoRecording();
+      GallerySaver.saveVideo(movieFile.path);
+      setState(() {});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _recordVideo() async {
+    if (_cameraController.value.isRecordingVideo) {
+      await _stopVideoRecording();
+      return;
+    }
+    await _startVideoRecording();
+  }
+
   Future<void> _openGallery() async {
     final ImagePicker picker = ImagePicker();
     await picker.pickImage(source: ImageSource.gallery);
@@ -259,25 +290,31 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: _takePicture,
+                    onTap: _videoMode ? _recordVideo : _takePicture,
                     child: _videoMode
                         ? Stack(
                             alignment: Alignment.center,
-                            children: const [
-                              Icon(
+                            children: [
+                              const Icon(
                                 Icons.fiber_manual_record_outlined,
                                 size: 72.0,
                               ),
-                              Icon(
+                              const Icon(
                                 Icons.fiber_manual_record_outlined,
                                 color: Colors.black,
                                 size: 64.0,
                               ),
-                              Icon(
-                                Icons.fiber_manual_record,
-                                color: Colors.red,
-                                size: 48.0,
-                              )
+                              _cameraController.value.isRecordingVideo
+                                  ? const Icon(
+                                      Icons.square,
+                                      color: Colors.red,
+                                      size: 32.0,
+                                    )
+                                  : const Icon(
+                                      Icons.fiber_manual_record,
+                                      color: Colors.red,
+                                      size: 48.0,
+                                    ),
                             ],
                           )
                         : const Icon(
