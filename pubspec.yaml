@@ -37,6 +37,8 @@ dependencies:
   camera: ^0.9.4+19
   gallery_saver: ^2.3.2
   image_picker: ^0.8.5
+  qr_flutter: ^4.0.0
+  modal_bottom_sheet: ^2.0.1
 
 dev_dependencies:
   flutter_test:

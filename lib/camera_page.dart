@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({required this.cameras, Key? key}) : super(key: key);
@@ -112,6 +113,49 @@ class _CameraPageState extends State<CameraPage> {
     }
     await _initCameraController();
     setState(() {});
+  }
+
+  Future<XFile?> _generateQrCodeFromImage() async {
+    final ImagePicker picker = ImagePicker();
+    return await picker.pickImage(source: ImageSource.gallery);
+  }
+
+  /// 画像のパスのQRコードが生成される
+  /// 本当は読み込むと画像が表示されるQRコードを生成したかった
+  Future<void> _showGeneratedQrCode() async {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    XFile? file = await _generateQrCodeFromImage();
+
+    showCupertinoDialog(
+      context: context,
+      builder: (_) => CupertinoAlertDialog(
+        content: SizedBox(
+          height: deviceWidth * 0.4,
+          child: Center(
+            child: QrImage(
+              data: file!.path,
+              size: deviceWidth * 0.5,
+            ),
+          ),
+        ),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            child: const Text('閉じる'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text('別の画像を選択'),
+            onPressed: () {
+              setState(() async {
+                file = await _generateQrCodeFromImage();
+              });
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _takePicture() async {
@@ -224,14 +268,9 @@ class _CameraPageState extends State<CameraPage> {
               _resolutionText,
             ),
             _menuItem(
-              () {},
+              _showGeneratedQrCode,
               const Icon(Icons.qr_code_2),
-              'QRコード',
-            ),
-            _menuItem(
-              () {},
-              const Icon(CupertinoIcons.barcode),
-              'バーコード',
+              'QRコード化',
             ),
             _menuItem(
               () {},
